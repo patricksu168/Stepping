@@ -1,5 +1,5 @@
 /*********************************************
- *  Agent.java 
+ *  Agent.java
  *  Sample Agent for Text-Based Adventure Game
  *  COMP3411 Artificial Intelligence
  *  UNSW Session 1, 2016
@@ -11,31 +11,13 @@ import java.net.*;
 
 public class Agent {
 
-   public char get_action( char view[][] ) {
+private boolean ifHasKey;
+private boolean ifHasAxe;
+private boolean ifHasStepStone;
 
-      // REPLACE THIS CODE WITH AI TO CHOOSE ACTION
-
-      int ch=0;
-
-      System.out.print("Enter Action(s): ");
-
-      try {
-         while ( ch != -1 ) {
-            // read character from keyboard
-            ch  = System.in.read();
-
-            switch( ch ) { // if character is a valid action, return it
-            case 'F': case 'L': case 'R': case 'C': case 'U':
-            case 'f': case 'l': case 'r': case 'c': case 'u':
-               return((char) ch );
-            }
-         }
-      }
-      catch (IOException e) {
-         System.out.println ("IO error:" + e );
-      }
-
-      return 0;
+   public String get_action( char view[][] ) {
+	   //TODO,
+	   return "HAHA we are so fucked";
    }
 
    void print_view( char view[][] )
@@ -69,7 +51,7 @@ public class Agent {
       int port;
       int ch;
       int i,j;
-
+      
       if( args.length < 2 ) {
          System.out.println("Usage: java Agent -p <port>\n");
          System.exit(-1);
@@ -115,5 +97,56 @@ public class Agent {
          }
          catch( IOException e ) {}
       }
+   }
+   
+   public boolean ifReachable(char block){
+	   if(block == '-'){
+		   if(ifHasKey){
+			   return true;
+		   }else{
+			   return false;
+		   }
+	   }
+	   else if(block == 'T'){
+		   if(ifHasAxe){
+			   return true;
+		   }else{
+			   return false;
+		   }
+	   }
+	   else if(block == '~'){
+		   if(ifHasStepStone){
+			   return true;
+		   }
+	   }else{
+		   return false;
+	   }
+	   return true;
+   }
+   
+   public char[][] map_scanner(char view[][]){
+	   char[][] map = new char[5][5];
+	   int x_coordinate = 0;;
+	   int y_coordinate = 0;
+	   while(y_coordinate < 5){
+		   while(x_coordinate < 5){
+			   char ref = view[x_coordinate][y_coordinate];
+			   boolean block = ifReachable(ref);
+			   char point;
+			   if(block){
+				   point = ' ';
+			   }else{
+				   point = 'x';
+			   }
+			   //Check if the block has an item upon it;
+			   if(ref == 'g' || ref == 'O' || ref == 'a' || ref == 'k'){
+				   point = ref;
+			   }
+			   map[x_coordinate][y_coordinate] = point;
+			   x_coordinate ++;;
+		   }
+		   y_coordinate ++;
+	   }
+	   return map;
    }
 }
