@@ -11,14 +11,23 @@ import java.net.*;
 
 public class Agent {
 
-private boolean ifHasKey;
-private boolean ifHasAxe;
-private boolean ifHasStepStone;
+private boolean HasKey = false;
+private boolean HasAxe = false;
+private boolean HasStepStone = false;
+private ArrayList<String> moves = new ArrayList<String>();
+private ArrayList<String> TheWayBack = new ArrayList<String>();
+private boolean GoldHasBeenFound = false;
 
-   public String get_action( char view[][] ) {
-	   //TODO,
-	   return "HAHA we are so fucked";
+   public char get_action( char view[][] ) {
+	   if(GoldHasBeenFound){
+		   return the_way_back_home();
+	   }
+	   char[][] usable_map = map_scanner(view);
+	   
+	   //Just for now;
+	   return 'a';
    }
+   
 
    void print_view( char view[][] )
    {
@@ -101,25 +110,17 @@ private boolean ifHasStepStone;
    
    public boolean ifReachable(char block){
 	   if(block == '-'){
-		   if(ifHasKey){
+		   if(HasKey){
 			   return true;
 		   }else{
 			   return false;
 		   }
-	   }
-	   else if(block == 'T'){
-		   if(ifHasAxe){
+	   }else if(block == 'T'){
+		   if(HasAxe){
 			   return true;
 		   }else{
 			   return false;
 		   }
-	   }
-	   else if(block == '~'){
-		   if(ifHasStepStone){
-			   return true;
-		   }
-	   }else{
-		   return false;
 	   }
 	   return true;
    }
@@ -139,7 +140,7 @@ private boolean ifHasStepStone;
 				   point = 'x';
 			   }
 			   //Check if the block has an item upon it;
-			   if(ref == 'g' || ref == 'O' || ref == 'a' || ref == 'k'){
+			   if(ref == 'g' || ref == 'O' || ref == 'a' || ref == 'k' || ref == '~'){
 				   point = ref;
 			   }
 			   map[x_coordinate][y_coordinate] = point;
@@ -148,5 +149,22 @@ private boolean ifHasStepStone;
 		   y_coordinate ++;
 	   }
 	   return map;
+   }
+   
+   public char move_to_char_transfer(String move){
+	   if(move.equals("up")){
+		   return 'f';
+	   }
+	   if(move.equals("right")){
+		   return 'r';
+	   }else{
+		   return 'l';
+	   }
+   }
+   
+   public char the_way_back_home(){
+	   char NextMove = move_to_char_transfer(TheWayBack.get(TheWayBack.size() - 1));
+	   TheWayBack.remove(TheWayBack.size() - 1);
+	   return NextMove;
    }
 }
