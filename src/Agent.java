@@ -21,47 +21,79 @@ private boolean GoldHasBeenFound = false;
 private boolean ExplorationState = true;
 private int     TranslateStep = 0;
 
-   public char get_action(char view[][]) {
-	   if(GoldHasBeenFound){
-		   return the_way_back_home();
-	   }
-	   char[][] useable_map = map_scanner(view);
-	   if(ExplorationState){
-		   explore_map(useable_map);
-	   }
-	   if(HasTarget){
-		   int[] tar = targets.get(0);
-		   int horizontal = tar[0];
-		   int vertical = tar[1];
-		   if(vertical == 0 && horizontal == 0){
-			   targets.remove(0);
-			   if(targets.get(0) != null){
-				   tar = targets.get(0);
-				   horizontal = tar[0];
-				   vertical = tar[1];
-			   }
+
+
+  public char get_action(char view[][]) {
+		   int x=2; int y=2;
+		   boolean found = false;
+		   this.moves = new LinkedList<Character>();
+		   if(GoldHasBeenFound){
+			   return the_way_back_home();
 		   }
-		   if(horizontal != 0 ){
-			   if(horizontal > 0){
-				   if(legal_step("right", useable_map)) return take_action("right");
-			   }else{
-				   if(legal_step("left", useable_map)) return take_action("left");
-			   }
+		   char[][] useable_map = map_scanner(view);
+		   if(ExplorationState){
+			   ExplorationState = this.explore_map(useable_map);
 		   }
-		   else if(vertical != 0){
-			   if(vertical > 0){
-				   if(legal_step("up", useable_map)) return take_action("up");
-			   }else{
-				   if(legal_step("back", useable_map)) return take_action("back");
+		   if(HasTarget){
+			   int i=0; int j=0; int count = 0;
+
+			   int[][] visit = new int[5][5];
+			   for (i=0; i<5; i++){
+				   for (j=0; j<5;j++){
+					   visit[i][j] = 0;
+				   }
 			   }
+			   int[] tar = targets.get(0);
+			   int horizontal = tar[0];
+			   int vertical = tar[1];
+			   if (isLegal(view,x+1,y)&&visit[x+1][y]==0) moves.push('R');
+			   if (isLegal(view,x-1,y)&&visit[x-1][y]==0) moves.push('L');
+			   if (isLegal(view,x,y+1)&&visit[x][y+1]==0) moves.push('F');
+			   if (isLegal(view,x,y-1)&&visit[x][y-1]==0) moves.push('B');
+			   while (x!=horizontal && y!=vertical){
+				   char tmp = moves.poll();
+				   count = 0;
+				   switch (tmp){
+				   	   case 'L': x=x-1;
+				   	   			 break;
+				   	   case 'R': x=x+1;
+				   	   	         break;
+				   	   case 'F': y=y+1;
+				   	   			 break;
+				   	   case 'B': y=y-1;
+				   	             break;
+				   }
+				   if (isLegal(view,x+1,y)&&visit[x+1][y]==0){ 
+					   moves.push('R'); count++;   
+				   }else if (isLegal(view,x-1,y)&&visit[x-1][y]==0) {
+					   moves.push('L'); count++;
+				   }else if (isLegal(view,x,y+1)&&visit[x][y+1]==0) {
+					   moves.push('F'); count++;
+			       }else if (isLegal(view,x,y-1)&&visit[x][y-1]==0) {
+			    	   moves.push('B'); count++;
+			       }
+				   if (count == 0){
+					   found=false;
+					   break;
+				   }
+			   } 
 		   }
+		   if (found){
+			   return moves.poll();
+		   }
+		   return take_random_step(useable_map);
 	   }
-	   if(targets.get(0) == null){
-		   HasTarget = false;
-		   ExplorationState = true;
+	   
+	   private boolean isLegal(char view[][], int x, int y){
+		   if (view[x][y] == ' '){
+			   return true;
+		   }else{
+			   if (view[x][y] == '~' && this.HasStepStone) return true;
+			   else if (view[x][y] == 'T' && this.HasAxe) return true;
+			   else if (view[x][y] == '-' && this.HasKey) return true;
+		   }
+		   return false; 
 	   }
-	   return take_random_step(useable_map);
-   }
    
 
    void print_view( char view[][] )
