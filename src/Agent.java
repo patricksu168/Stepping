@@ -12,16 +12,16 @@ import java.net.*;
 public class Agent {
 
 private boolean HasKey = false;
-	private boolean HasAxe = false;
-	private boolean HasStepStone = false;
-	private ArrayList<String> TheWayBack = new ArrayList<String>();
-	private ArrayList<int[]> targets = new ArrayList<int[]>();
-	private boolean HasTarget = false;
-	private boolean GoldHasBeenFound = false;
-	private boolean ExplorationState = true;
-	private int     TranslateStep = 0;
+private boolean HasAxe = false;
+private boolean HasStepStone = false;
+private ArrayList<String> TheWayBack = new ArrayList<String>();
+private ArrayList<int[]> targets = new ArrayList<int[]>();
+private boolean HasTarget = false;
+private boolean GoldHasBeenFound = false;
+private boolean ExplorationState = true;
+private int     TranslateStep = 0;
 	
-	private LinkedList<Character> moves = new LinkedList<Character>();;
+private LinkedList<Character> moves = new LinkedList<Character>();;
 
 
 	   public char get_action(char view[][]) {
