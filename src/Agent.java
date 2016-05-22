@@ -35,9 +35,11 @@ private int     TranslateStep = 0;
 		   int vertical = tar[1];
 		   if(vertical == 0 && horizontal == 0){
 			   targets.remove(0);
-			   tar = targets.get(0);
-			   horizontal = tar[0];
-			   vertical = tar[1];
+			   if(targets.get(0) != null){
+				   tar = targets.get(0);
+				   horizontal = tar[0];
+				   vertical = tar[1];
+			   }
 		   }
 		   if(horizontal != 0 ){
 			   if(horizontal > 0){
@@ -206,14 +208,17 @@ private int     TranslateStep = 0;
    
    public boolean legal_step(String step, char view[][]){
 	   //TODO
+	   return true;
    }
    
    public char take_action(String move){
 	   //TODO
+	   return 'a';   
    }
    
    public char take_random_step(char view[][]){
 	   //TODO
+	   return 'a';
    }
    
    public char move_to_action_transfer(String move){
