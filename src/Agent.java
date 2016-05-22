@@ -14,18 +14,51 @@ public class Agent {
 private boolean HasKey = false;
 private boolean HasAxe = false;
 private boolean HasStepStone = false;
-private ArrayList<String> moves = new ArrayList<String>();
 private ArrayList<String> TheWayBack = new ArrayList<String>();
+private ArrayList<int[]> targets = new ArrayList<int[]>();
+private boolean HasTarget = false;
 private boolean GoldHasBeenFound = false;
+private boolean ExplorationState = true;
+private int     TranslateStep = 0;
 
-   public char get_action( char view[][] ) {
+   public char get_action(char view[][]) {
 	   if(GoldHasBeenFound){
 		   return the_way_back_home();
 	   }
-	   char[][] usable_map = map_scanner(view);
-	   
-	   //Just for now;
-	   return 'a';
+	   char[][] useable_map = map_scanner(view);
+	   if(ExplorationState){
+		   explore_map(useable_map);
+	   }
+	   if(HasTarget){
+		   int[] tar = targets.get(0);
+		   int horizontal = tar[0];
+		   int vertical = tar[1];
+		   if(vertical == 0 && horizontal == 0){
+			   targets.remove(0);
+			   tar = targets.get(0);
+			   horizontal = tar[0];
+			   vertical = tar[1];
+		   }
+		   if(horizontal != 0 ){
+			   if(horizontal > 0){
+				   if(legal_step("right", useable_map)) return take_action("right");
+			   }else{
+				   if(legal_step("left", useable_map)) return take_action("left");
+			   }
+		   }
+		   else if(vertical != 0){
+			   if(vertical > 0){
+				   if(legal_step("up", useable_map)) return take_action("up");
+			   }else{
+				   if(legal_step("back", useable_map)) return take_action("back");
+			   }
+		   }
+	   }
+	   if(targets.get(0) == null){
+		   HasTarget = false;
+		   ExplorationState = true;
+	   }
+	   return take_random_step(useable_map);
    }
    
 
@@ -151,7 +184,39 @@ private boolean GoldHasBeenFound = false;
 	   return map;
    }
    
-   public char move_to_char_transfer(String move){
+   public boolean explore_map(char view[][]){
+	   int x = 0, y = 0;
+	   boolean ifFoundSomething = false;
+	   while(y < 5){
+		   while(x < 5){
+			   char ref = view[x][y];
+			   if(ref == 'g' || ref == 'a' || ref == 'O' || ref == 'k'){
+				   ExplorationState = false;
+				   ifFoundSomething = true;
+				   HasTarget = true;
+			   }
+			   int[] item = {x - 2, 2 - y};
+			   targets.add(item); 
+			   x ++;
+		   }
+		   y ++;
+	   } 
+	   return ifFoundSomething;
+   }
+   
+   public boolean legal_step(String step, char view[][]){
+	   //TODO
+   }
+   
+   public char take_action(String move){
+	   //TODO
+   }
+   
+   public char take_random_step(char view[][]){
+	   //TODO
+   }
+   
+   public char move_to_action_transfer(String move){
 	   if(move.equals("up")){
 		   return 'f';
 	   }
@@ -163,7 +228,7 @@ private boolean GoldHasBeenFound = false;
    }
    
    public char the_way_back_home(){
-	   char NextMove = move_to_char_transfer(TheWayBack.get(TheWayBack.size() - 1));
+	   char NextMove = move_to_action_transfer(TheWayBack.get(TheWayBack.size() - 1));
 	   TheWayBack.remove(TheWayBack.size() - 1);
 	   return NextMove;
    }
