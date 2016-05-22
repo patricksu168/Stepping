@@ -12,21 +12,21 @@ import java.net.*;
 public class Agent {
 
 private boolean HasKey = false;
-private boolean HasAxe = false;
-private boolean HasStepStone = false;
-private ArrayList<String> TheWayBack = new ArrayList<String>();
-private ArrayList<int[]> targets = new ArrayList<int[]>();
-private boolean HasTarget = false;
-private boolean GoldHasBeenFound = false;
-private boolean ExplorationState = true;
-private int     TranslateStep = 0;
+	private boolean HasAxe = false;
+	private boolean HasStepStone = false;
+	private ArrayList<String> TheWayBack = new ArrayList<String>();
+	private ArrayList<int[]> targets = new ArrayList<int[]>();
+	private boolean HasTarget = false;
+	private boolean GoldHasBeenFound = false;
+	private boolean ExplorationState = true;
+	private int     TranslateStep = 0;
+	
+	private LinkedList<Character> moves = new LinkedList<Character>();;
 
 
-
-  public char get_action(char view[][]) {
+	   public char get_action(char view[][]) {
 		   int x=2; int y=2;
 		   boolean found = false;
-		   this.moves = new LinkedList<Character>();
 		   if(GoldHasBeenFound){
 			   return the_way_back_home();
 		   }
@@ -34,9 +34,12 @@ private int     TranslateStep = 0;
 		   if(ExplorationState){
 			   ExplorationState = this.explore_map(useable_map);
 		   }
+		   if (found){
+			   return moves.poll();
+		   }
 		   if(HasTarget){
 			   int i=0; int j=0; int count = 0;
-
+			   LinkedList<Character> tmp2 = new LinkedList<Character>();
 			   int[][] visit = new int[5][5];
 			   for (i=0; i<5; i++){
 				   for (j=0; j<5;j++){
@@ -51,7 +54,7 @@ private int     TranslateStep = 0;
 			   if (isLegal(view,x,y+1)&&visit[x][y+1]==0) moves.push('F');
 			   if (isLegal(view,x,y-1)&&visit[x][y-1]==0) moves.push('B');
 			   while (x!=horizontal && y!=vertical){
-				   char tmp = moves.poll();
+				   char tmp = tmp2.poll();
 				   count = 0;
 				   switch (tmp){
 				   	   case 'L': x=x-1;
@@ -64,13 +67,13 @@ private int     TranslateStep = 0;
 				   	             break;
 				   }
 				   if (isLegal(view,x+1,y)&&visit[x+1][y]==0){ 
-					   moves.push('R'); count++;   
+					   moves.push('R'); tmp2.push('R'); count++;   
 				   }else if (isLegal(view,x-1,y)&&visit[x-1][y]==0) {
-					   moves.push('L'); count++;
+					   moves.push('L'); tmp2.push('L');count++;
 				   }else if (isLegal(view,x,y+1)&&visit[x][y+1]==0) {
-					   moves.push('F'); count++;
+					   moves.push('F'); tmp2.push('F');count++;
 			       }else if (isLegal(view,x,y-1)&&visit[x][y-1]==0) {
-			    	   moves.push('B'); count++;
+			    	   moves.push('B'); tmp2.push('B');count++;
 			       }
 				   if (count == 0){
 					   found=false;
@@ -78,9 +81,7 @@ private int     TranslateStep = 0;
 				   }
 			   } 
 		   }
-		   if (found){
-			   return moves.poll();
-		   }
+		   
 		   return take_random_step(useable_map);
 	   }
 	   
